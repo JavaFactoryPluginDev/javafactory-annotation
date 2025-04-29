@@ -1,0 +1,64 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+    id 'signing'
+}
+
+group = 'io.github.javafactoryplugindev'
+version = '0.1'
+description = 'Set of annotations for Java LLM code generation'
+
+java {
+    withSourcesJar()
+    withJavadocJar() // ✅ 추가 필요
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+
+            artifactId = 'javafactory-annotation'
+
+            pom {
+                name = 'JavaFactory Annotations'
+                description = 'A minimal set of annotations designed for Java LLM code generation tools.'
+                url = 'https://github.com/JavaFactoryPluginDev/annotation'
+
+                licenses {
+                    license {
+                        name = 'MIT License'
+                        url = 'https://opensource.org/licenses/MIT'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'javafactoryplugindev'
+                        name = 'Dan Kim'
+                        email = 'your@email.com'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:https://github.com/JavaFactoryPluginDev/annotation.git'
+                    developerConnection = 'scm:git:ssh://git@github.com/JavaFactoryPluginDev/annotation.git'
+                    url = 'https://github.com/JavaFactoryPluginDev/annotation'
+                }
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            name = "OSSRH"
+            url = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
+            credentials {
+                username = project.findProperty("ossrhUsername") ?: ""
+                password = project.findProperty("ossrhPassword") ?: ""
+            }
+        }
+    }
+}
+
+signing {
+    sign publishing.publications.mavenJava
+}
