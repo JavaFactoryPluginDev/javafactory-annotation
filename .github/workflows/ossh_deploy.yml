@@ -1,7 +1,7 @@
 name: Release to Maven Central
 
 on:
-  workflow_dispatch: # manual deploy
+  workflow_dispatch: # manual trigger
 
 jobs:
   release:
@@ -17,6 +17,9 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
+      - name: Set up Gradle
+        uses: gradle/gradle-build-action@v2
+
       - name: Import GPG key
         run: |
           echo "$GPG_PRIVATE_KEY" | gpg --batch --import
@@ -25,7 +28,7 @@ jobs:
 
       - name: Publish to Maven Central
         run: |
-          ./gradlew clean build publish --no-daemon \
+          gradle clean build publish --no-daemon \
             -PossrhUsername=${{ secrets.OSSRH_USERNAME }} \
             -PossrhPassword=${{ secrets.OSSRH_PASSWORD }} \
             -Psigning.keyId=${{ secrets.GPG_KEY_ID }} \
